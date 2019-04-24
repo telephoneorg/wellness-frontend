@@ -3,12 +3,16 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from 'store/actions/actionsIndex';
 
+import Amplify, { Auth } from 'aws-amplify';
+import awsmobile from './aws-exports';
+
 import Header from 'components/Header/Header'
 import HeaderAuthLinks from "components/Header/HeaderAuthLinks.jsx";
 import HeaderUnauthLinks from "components/Header/HeaderUnauthLinks.jsx";
 import logo from 'assets/img/logo-white.png'
 import Main from 'components/Navigation/Main'
 
+Amplify.configure(awsmobile);
 
 class App extends Component {
 

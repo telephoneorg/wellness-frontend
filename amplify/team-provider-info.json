@@ -9,6 +9,11 @@
             "UnauthRoleName": "welness-app-20190424134924-unauthRole",
             "StackName": "welness-app-20190424134924",
             "StackId": "arn:aws:cloudformation:us-east-1:499576263125:stack/welness-app-20190424134924/4d56d530-66b9-11e9-a13e-12d7c29d9238"
+        },
+        "categories": {
+            "auth": {
+                "cognitofbc7185c": {}
+            }
         }
     }
 }
