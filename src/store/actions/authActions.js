@@ -1,7 +1,9 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from 'store/actions/actionTypes';
 import jwt_decode from 'jwt-decode';
-import { handleErrors } from '../../utility';
-import history from '../../history';
+import { handleErrors } from 'utility';
+import history from 'history.js';
+
+import { Auth } from 'aws-amplify';
 
 export const signupStart = () => {
     return {
@@ -26,36 +28,12 @@ export const signupFail = (signupError) => {
 export const signup = ( email, password ) => {
     return dispatch => {
       dispatch(signupStart());
-      const authData = {
-          user: {
-            email: email,
-            password: password
-          }
-      };
-      let url = 'http://localhost:3001/api/users';
-      fetch(url, {
-              method: "POST",
-              mode: "cors",
-              credentials: "same-origin",
-              headers: {
-                  "Content-Type": "application/json; charset=utf-8",
-              },
-              body: JSON.stringify(authData),
-          })
-          .then(handleErrors)
-          .then( response => {
-            return response.json()
-          })
-          .then( json => {
-            if(json.status === 200) {
-              dispatch(signupSuccess(json.user.id))
-            } else {
-              dispatch(signupFail(json.errors))
-            }
-          })
-          .catch( err => {
-            history.push('/page-not-found')
-          })
+      Auth.signUp({
+        username: email,
+        password: password
+        })
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
       };
   }
 
