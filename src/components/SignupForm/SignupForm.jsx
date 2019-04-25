@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
-
-import * as actions from 'store/actions/actionsIndex';
+import { Auth } from 'aws-amplify';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -40,7 +38,12 @@ class SignupButton extends Component {
 
   submitHandler = ( event ) => {
     event.preventDefault();
-    this.props.onSignup( this.state.email, this.state.password );
+    Auth.signUp({
+      username: this.state.email,
+      password: this.state.password
+      })
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
   }
 
   handleChange = event => {
@@ -157,20 +160,4 @@ class SignupButton extends Component {
   }
 }
 
-const mapStateToProps = state => {
-    return {
-        loading: state.auth.loading,
-        errors: state.auth.signupError,
-        isAuthenticated: state.auth.token !== null,
-        authRedirectPath: state.auth.authRedirectPath,
-        isNewSignup: state.auth.isNewSignup
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onSignup: ( email, password, username ) => dispatch( actions.signup( email, password ) )
-    };
-};
-
-export default connect( mapStateToProps, mapDispatchToProps )(withStyles(javascriptStyles)(SignupButton));
+export default withStyles(javascriptStyles)(SignupButton);

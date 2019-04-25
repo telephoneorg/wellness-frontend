@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import * as actions from 'store/actions/actionsIndex';
 
 import Amplify from 'aws-amplify';
 import awsmobile from './aws-exports';
@@ -25,9 +23,6 @@ class App extends Component {
     const { isAuthenticated, ...rest } = this.props;
 
     let navLinks = <HeaderUnauthLinks dropdownHoverColor="info"/>
-    if(isAuthenticated){
-      navLinks = <HeaderAuthLinks dropdownHoverColor="info"/>
-    }
 
     return (
       <React.Fragment>
@@ -48,18 +43,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    isAuthenticated: state.auth.token !== null
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onTryAutoLogin: () => dispatch( actions.authCheckState() )
-  };
-};
-
-
-
-export default withRouter( connect( mapStateToProps, mapDispatchToProps)( App ) );
+export default withRouter( App );
