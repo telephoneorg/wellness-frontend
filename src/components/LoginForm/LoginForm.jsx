@@ -44,7 +44,7 @@ class SignupButton extends Component {
 
   render() {
     const { classes } = this.props;
-    const { email, password, passwordConfirm } = this.state
+    const { email, password } = this.state
 
     return (
       <React.Fragment>
