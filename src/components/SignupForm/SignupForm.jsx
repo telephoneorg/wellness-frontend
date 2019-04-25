@@ -26,8 +26,7 @@ class SignupButton extends Component {
   state = {
     email:"",
     password:"",
-    passwordConfirm:"",
-    submitted: false,
+    passwordConfirm:""
   };
 
   componentDidMount = () => {

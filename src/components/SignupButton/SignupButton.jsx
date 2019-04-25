@@ -17,7 +17,7 @@ function Transition(props) {
 class SignupButton extends Component {
 
   state = {
-    loginModal: false,
+    signupModal: false,
   };
 
   handleClickOpen = modal => {
@@ -34,11 +34,11 @@ class SignupButton extends Component {
 
   render() {
     const { classes } = this.props;
-    const { loginModal } = this.state
+    const { signupModal } = this.state
 
     return (
       <div>
-        <Button color="warning" onClick={() => this.handleClickOpen("loginModal")}>
+        <Button color="warning" onClick={() => this.handleClickOpen("signupModal")}>
           Sign Up
         </Button>
         <Dialog
@@ -46,12 +46,12 @@ class SignupButton extends Component {
             root: classes.modalRoot,
             paper: classes.modal + " " + classes.modalLogin
           }}
-          open={loginModal}
+          open={signupModal}
           TransitionComponent={Transition}
           keepMounted
-          onClose={() => this.handleClose("loginModal")}
-          aria-labelledby="login-modal-slide-title"
-          aria-describedby="login-modal-slide-description"
+          onClose={() => this.handleClose("signupModal")}
+          aria-labelledby="signup-modal-slide-title"
+          aria-describedby="signup-modal-slide-description"
           >
           <SignupForm />
         </Dialog>
