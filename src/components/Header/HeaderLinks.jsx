@@ -1,9 +1,10 @@
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // react components for routing our app without refresh
 import { Link } from "react-router-dom";
+import useGlobal from "globalStore/store/globalStore";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -19,6 +20,11 @@ import SignupButton from 'components/SignupButton/SignupButton'
 import headerLinksStyle from "assets/jss/material-kit-pro-react/components/headerLinksStyle.jsx";
 
 function HeaderUnauthLinks({ ...props }) {
+
+  const { classes, dropdownHoverColor, loggedIn } = props;
+  const [globalState, globalActions] = useGlobal();
+  const { userLoggedIn } = globalState;
+
   const easeInOutQuad = (t, b, c, d) => {
     t /= d / 2;
     if (t < 1) return (c / 2) * t * t + b;
@@ -58,12 +64,17 @@ function HeaderUnauthLinks({ ...props }) {
   };
   var onClickSections = {};
 
-  const { classes, dropdownHoverColor } = props;
-  return (
+
+  const logoutHandler = (e) => {
+    e.preventDefault()
+    globalActions.logOut()
+  }
+
+  let links =
     <List className={classes.list + " " + classes.mlAuto}>
       <ListItem className={classes.listItem}>
         <Button
-          href="#pablo"
+          href="communities"
           className={classes.navButton}
           onClick={e => e.preventDefault()}
           color="transparent"
@@ -78,7 +89,44 @@ function HeaderUnauthLinks({ ...props }) {
         <SignupButton />
       </ListItem>
     </List>
-  );
+
+  if(userLoggedIn) {
+    links =
+    <List className={classes.list + " " + classes.mlAuto}>
+      <ListItem className={classes.listItem}>
+        <Button
+          href="my-orca"
+          className={classes.navButton}
+          onClick={e => e.preventDefault()}
+          color="transparent"
+        >
+          My Orca
+        </Button>
+      </ListItem>
+      <ListItem className={classes.listItem}>
+        <Button
+          href="#pablo"
+          className={classes.navButton}
+          onClick={e => e.preventDefault()}
+          color="transparent"
+        >
+          Communities
+        </Button>
+      </ListItem>
+      <ListItem className={classes.listItem}>
+        <Button
+          href="#pablo"
+          className={classes.navButton}
+          onClick={e => logoutHandler(e)}
+          color="transparent"
+        >
+          Log Out
+        </Button>
+      </ListItem>
+    </List>
+  }
+
+  return (links);
 }
 
 HeaderUnauthLinks.defaultProps = {

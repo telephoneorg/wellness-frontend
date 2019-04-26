@@ -9,7 +9,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Close from "@material-ui/icons/Close";
 import Mail from "@material-ui/icons/Mail";
 // core components
 import Button from "components/CustomButtons/Button.jsx";
@@ -70,7 +69,11 @@ const SignupForm = (props) => {
       username: email,
       password: password
       })
-      .then(data => console.log(data))
+      .then(data => {
+        console.log(data)
+        //redirect to thank u page
+
+      })
       .catch((err) => {
         setError(err.message)
       });
@@ -80,14 +83,14 @@ const SignupForm = (props) => {
     <React.Fragment>
           <Card plain className={classes.modalLoginCard}>
             <DialogTitle
-              id="login-modal-slide-title"
+              id="signup-modal-slide-title"
               disableTypography
               className={classes.modalHeader}
             >
               <CardHeader
                 plain
                 color="primary"
-                className={`${classes.textCenter} ${classes.cardLoginHeader}`}
+                className={`${classes.textCenter} ${classes.cardSignupHeader}`}
               >
                 <h5 className={classes.cardTitleWhite}>Sign Up</h5>
                 <div className={classes.socialLine}>
@@ -102,7 +105,7 @@ const SignupForm = (props) => {
             </DialogTitle>
             {errorNotification}
             <DialogContent
-              id="login-modal-slide-description"
+              id="signup-modal-slide-description"
               className={classes.modalBody}
             >
               <ValidatorForm
@@ -111,7 +114,7 @@ const SignupForm = (props) => {
                 <p className={`${classes.description} ${classes.textCenter}`}>
                   Or Be Classical
                 </p>
-                <CardBody className={classes.cardLoginBody}>
+                <CardBody className={classes.cardSignupBody}>
                   <TextValidator
                     value={email}
                     validators={['required', 'isEmail']}

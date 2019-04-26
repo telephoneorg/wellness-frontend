@@ -77,6 +77,16 @@ const javascriptStyles = theme => ({
     paddingTop: "0",
     paddingBottom: "0"
   },
+  cardSignupHeader: {
+    marginTop: "-40px",
+    padding: "20px 0",
+    width: "100%",
+    marginBottom: "15px"
+  },
+  cardSignupBody: {
+    paddingTop: "0",
+    paddingBottom: "0"
+  },
   justifyContentCenter: {
     WebkitBoxPack: "center !important",
     MsFlexPack: "center !important",

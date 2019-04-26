@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import { Auth } from 'aws-amplify';
+import useGlobal from "globalStore/store/globalStore";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -9,45 +10,66 @@ import DialogContent from "@material-ui/core/DialogContent";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Close from "@material-ui/icons/Close";
 import Mail from "@material-ui/icons/Mail";
 // core components
 import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import SnackbarContent from "components/Snackbar/SnackbarContent.jsx";
 
 import javascriptStyles from "assets/jss/material-kit-pro-react/views/componentsSections/javascriptStyles.jsx";
 
-class SignupButton extends Component {
+const LoginForm = (props) => {
 
-  state = {
-    email:"",
-    password:"",
-  };
+  const [globalState, globalActions] = useGlobal();
+  const { classes } = props;
+  const [error, setError] = useState("")
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  submitHandler = ( event ) => {
+  let errorNotification = null
+  if(error){
+    errorNotification = (
+      <React.Fragment>
+        <SnackbarContent
+          message={error}
+          color="danger"
+          icon="info_outline"
+        />
+      </React.Fragment>
+    )
+  }
+
+  const updateFormData = event =>{
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value
+    });
+  }
+
+
+  const { email, password } = formData;
+
+  function submitHandler( event ){
     event.preventDefault();
     Auth.signIn({
-      username: this.state.email,
-      password: this.state.password
+      username: email,
+      password: password
       })
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
+      .then(data => {
+        globalActions.logIn()
+      })
+      .catch((err) => {
+        console.log(err)
+        setError(err.message)
+      });
   }
 
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
-  }
-
-  render() {
-    const { classes } = this.props;
-    const { email, password } = this.state
-
-    return (
-      <React.Fragment>
+  return (
+    <React.Fragment>
           <Card plain className={classes.modalLoginCard}>
             <DialogTitle
               id="login-modal-slide-title"
@@ -59,16 +81,6 @@ class SignupButton extends Component {
                 color="primary"
                 className={`${classes.textCenter} ${classes.cardLoginHeader}`}
               >
-                <Button
-                  simple
-                  className={classes.modalCloseButton}
-                  key="close"
-                  aria-label="Close"
-                  onClick={() => this.handleClose("loginModal")}
-                >
-                  {" "}
-                  <Close className={classes.modalClose} />
-                </Button>
                 <h5 className={classes.cardTitleWhite}>Log In</h5>
                 <div className={classes.socialLine}>
                   <Button justIcon link className={classes.socialLineButton}>
@@ -80,12 +92,13 @@ class SignupButton extends Component {
                 </div>
               </CardHeader>
             </DialogTitle>
+            {errorNotification}
             <DialogContent
               id="login-modal-slide-description"
               className={classes.modalBody}
             >
               <ValidatorForm
-                onSubmit={this.submitHandler}
+                onSubmit={submitHandler}
                 >
                 <p className={`${classes.description} ${classes.textCenter}`}>
                   Or Be Classical
@@ -98,7 +111,7 @@ class SignupButton extends Component {
                     className={classes.authFields}
                     placeholder="Email"
                     fullWidth
-                    onChange={this.handleChange}
+                    onChange={e => updateFormData(e)}
                     name="email"
                     id="signup-modal-email"
                     InputProps={{
@@ -112,7 +125,7 @@ class SignupButton extends Component {
                     className={classes.authFields}
                     placeholder="Password"
                     fullWidth
-                    onChange={this.handleChange}
+                    onChange={e => updateFormData(e)}
                     name="password"
                     id="signup-modal-password"
                     InputProps={{
@@ -120,6 +133,7 @@ class SignupButton extends Component {
                     }}
                   />
                   <Button
+                    fullWidth
                     style={{marginBottom:"1em"}}
                     color="primary"
                     size="lg"
@@ -131,8 +145,7 @@ class SignupButton extends Component {
             </DialogContent>
           </Card>
       </React.Fragment>
-    );
-  }
+  );
 }
 
-export default withStyles(javascriptStyles)(SignupButton);
+export default withStyles(javascriptStyles)(LoginForm);
