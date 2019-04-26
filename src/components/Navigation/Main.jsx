@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 
 import ParticipantZone from 'views/ParticipantZone/ParticipantZone'
 
+
 const Main = () => (
   <main>
     <Switch>

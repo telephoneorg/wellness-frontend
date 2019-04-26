@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import { Auth } from 'aws-amplify';
 
@@ -16,48 +16,68 @@ import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import SnackbarContent from "components/Snackbar/SnackbarContent.jsx";
 
 import javascriptStyles from "assets/jss/material-kit-pro-react/views/componentsSections/javascriptStyles.jsx";
 
-class SignupButton extends Component {
+const SignupForm = (props) => {
 
-  state = {
-    email:"",
-    password:"",
-    passwordConfirm:""
-  };
+  const { classes } = props;
+  const [error, setError] = useState("")
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    passwordConfirm: ""
+  });
 
-  componentDidMount = () => {
+  let errorNotification = null
+  if(error){
+    errorNotification = (
+      <React.Fragment>
+        <SnackbarContent
+          message={error}
+          color="danger"
+          icon="info_outline"
+        />
+      </React.Fragment>
+    )
+  }
+
+
+
+  useEffect(() => {
     ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-        if (value !== this.state.password) {
+        if (value !== password) {
             return false;
         }
         return true;
     });
-}
+  })
 
-  submitHandler = ( event ) => {
+  const updateFormData = event =>{
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value
+    });
+  }
+
+
+  const { email, password, passwordConfirm } = formData;
+
+  function submitHandler( event ){
     event.preventDefault();
     Auth.signUp({
-      username: this.state.email,
-      password: this.state.password
+      username: email,
+      password: password
       })
       .then(data => console.log(data))
-      .catch(err => console.log(err));
+      .catch((err) => {
+        setError(err.message)
+      });
   }
 
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
-  }
-
-  render() {
-    const { classes } = this.props;
-    const { email, password, passwordConfirm } = this.state
-
-    return (
-      <React.Fragment>
+  return (
+    <React.Fragment>
           <Card plain className={classes.modalLoginCard}>
             <DialogTitle
               id="login-modal-slide-title"
@@ -69,16 +89,6 @@ class SignupButton extends Component {
                 color="primary"
                 className={`${classes.textCenter} ${classes.cardLoginHeader}`}
               >
-                <Button
-                  simple
-                  className={classes.modalCloseButton}
-                  key="close"
-                  aria-label="Close"
-                  onClick={() => this.handleClose("loginModal")}
-                >
-                  {" "}
-                  <Close className={classes.modalClose} />
-                </Button>
                 <h5 className={classes.cardTitleWhite}>Sign Up</h5>
                 <div className={classes.socialLine}>
                   <Button justIcon link className={classes.socialLineButton}>
@@ -90,12 +100,13 @@ class SignupButton extends Component {
                 </div>
               </CardHeader>
             </DialogTitle>
+            {errorNotification}
             <DialogContent
               id="login-modal-slide-description"
               className={classes.modalBody}
             >
               <ValidatorForm
-                onSubmit={this.submitHandler}
+                onSubmit={submitHandler}
                 >
                 <p className={`${classes.description} ${classes.textCenter}`}>
                   Or Be Classical
@@ -108,7 +119,7 @@ class SignupButton extends Component {
                     className={classes.authFields}
                     placeholder="Email"
                     fullWidth
-                    onChange={this.handleChange}
+                    onChange={e => updateFormData(e)}
                     name="email"
                     id="signup-modal-email"
                     InputProps={{
@@ -122,7 +133,7 @@ class SignupButton extends Component {
                     className={classes.authFields}
                     placeholder="Password"
                     fullWidth
-                    onChange={this.handleChange}
+                    onChange={e => updateFormData(e)}
                     name="password"
                     id="signup-modal-password"
                     InputProps={{
@@ -137,7 +148,7 @@ class SignupButton extends Component {
                     className={classes.authFields}
                     placeholder="Confirm Password"
                     fullWidth
-                    onChange={this.handleChange}
+                    onChange={e => updateFormData(e)}
                     name="passwordConfirm"
                     id="signup-modal-password"
                     InputProps={{
@@ -145,6 +156,7 @@ class SignupButton extends Component {
                     }}
                   />
                   <Button
+                    fullWidth
                     style={{marginBottom:"1em"}}
                     color="primary"
                     size="lg"
@@ -156,8 +168,7 @@ class SignupButton extends Component {
             </DialogContent>
           </Card>
       </React.Fragment>
-    );
-  }
+  );
 }
 
-export default withStyles(javascriptStyles)(SignupButton);
+export default withStyles(javascriptStyles)(SignupForm);

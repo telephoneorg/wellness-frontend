@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
-
 import Amplify from 'aws-amplify';
 import awsmobile from './aws-exports';
 
@@ -12,35 +11,30 @@ import Main from 'components/Navigation/Main'
 
 Amplify.configure(awsmobile);
 
-class App extends Component {
+function App(props) {
 
+  const { ...rest } = props;
 
-  // componentDidMount() {
-  //   this.props.onTryAutoLogin()
-  // }
+  let navLinks = <HeaderUnauthLinks dropdownHoverColor="info"/>
 
-  render() {
-    const { isAuthenticated, ...rest } = this.props;
-
-    let navLinks = <HeaderUnauthLinks dropdownHoverColor="info"/>
-
-    return (
-      <React.Fragment>
-        <Header
-          color="transparent"
-          brand={<img src={logo} alt="logo" height="40px"/>}
-          links={navLinks}
-          fixed
-          changeColorOnScroll={{
-            height: 200,
-            color: "primary"
-          }}
-          {...rest}
-        />
-      <Main/>
-      </React.Fragment>
+  return (
+    <React.Fragment>
+      <Header
+        color="transparent"
+        brand={<img src={logo} alt="logo" height="40px"/>}
+        links={navLinks}
+        fixed
+        changeColorOnScroll={{
+          height: 200,
+          color: "primary"
+        }}
+        {...rest}
+      />
+    <Main/>
+    </React.Fragment>
   );
-  }
 }
+
+
 
 export default withRouter( App );
